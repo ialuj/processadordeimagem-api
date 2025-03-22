@@ -1,0 +1,8 @@
+-- Roles
+INSERT INTO roles(ID, UUID, CODE, DESCRIPTION, CREATED_BY, CREATION_DATE, UPDATE_DATE, UPDATED_BY)
+VALUES (1, uuid(), 'ROOT', 'Root',  '85f7a4ef-8498-47c6-8832-8c5050f879f2', '2025-03-16 09:00:00.000',
+        NULL, NULL),
+       (2, uuid(),  'ADMINISTRATOR','Administrator',  '85f7a4ef-8498-47c6-8832-8c5050f879f2',
+        '2025-03-16 09:00:00.000', NULL, NULL),
+       (3, uuid(),  'REGULAR','Regular',  '85f7a4ef-8498-47c6-8832-8c5050f879f2',
+        '2025-03-16 09:00:00.000', NULL, NULL);

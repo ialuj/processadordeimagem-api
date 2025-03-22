@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BIX Tecnologia - Processador de Imagens</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        margin: 0;
+        padding: 0;
+      }
+      .email-container {
+        width: 600px;
+        margin: 0 auto;
+        background-color: #ffffff;
+        padding: 20px;
+        border-radius: 10px;
+      }
+      .header {
+        background-color: deepskyblue;
+        padding: 20px;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+        display: flex;
+        align-items: center;
+      }
+      .header img {
+        width: 80px;
+        height: 80px;
+        margin-right: 20px;
+      }
+      .header a {
+        color: #ffffff;
+        font-size: 24px;
+        font-weight: bold;
+        text-decoration: none;
+      }
+      .body-content {
+        padding: 20px;
+        color: #333333;
+        font-size: 16px;
+        line-height: 1.6;
+      }
+      .body-content strong {
+        color: #333333;
+      }
+      .recommendation {
+        margin-top: 30px;
+        padding: 10px;
+        background-color: #f8f8f8;
+        border-left: 4px solid deepskyblue;
+      }
+      .footer {
+        background-color: deepskyblue;
+        color: #ffffff;
+        text-align: center;
+        padding: 15px;
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
+      }
+      .footer p {
+        margin: 0;
+      }
+      /* Additional styling for email layout */
+      table {
+        width: 100%;
+        border-spacing: 0;
+      }
+      td {
+        padding: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="email-container">
+      <!-- Header Section -->
+      <div class="header">
+        <img
+          src="${serverUrl}/favicon.ico"
+          alt="BIX Tecnologia - Processador de Imagens"
+        />
+        <a href="${serverUrl}" target="_blank"
+          >BIX Tecnologia - Processador de Imagens</a
+        >
+      </div>
+
+      <!-- Body Content -->
+      <div class="body-content">
+        <p>Caro(a): <strong>${name}</strong>,</p>
+        <p>
+          Viemos por este meio confirmar o seu registro na plataforma de
+          Processamento de Imagens da BIX Tecnologia.
+        </p>
+        <p>A partir de agora já pode efectuar o Processamento de Imagens.</p>
+        <p>
+          A quota de processamentos por dia depende do seu Plano. Se for Básico
+          apenas poderá processar até 10 imagens por dia, e se for Premium não
+          existe limite de imagens que pode processar.
+        </p>
+        <p>
+          <strong style="color: #766f6e">O seu Utilizador de acesso é:</strong>
+          <span><strong>${username}</strong></span>
+        </p>
+        <p>
+          <strong style="color: #766f6e">A sua Senha de acesso é:</strong>
+          <span><strong>${password}</strong></span>
+        </p>
+
+        <p>
+          Obrigado, <br />
+          <strong style="color: #766f6e"
+            >A equipa da Plataforma da BIX Tencologia - Processador de
+            Imagens</strong
+          >
+        </p>
+      </div>
+
+      <!-- Footer Section -->
+      <div class="footer">
+        <p>
+          &copy; 2024 BIX Tencologia - Processador de Imagens. Todos os direitos
+          reservados.
+        </p>
+      </div>
+    </div>
+  </body>
+</html>

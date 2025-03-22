@@ -1,0 +1,47 @@
+INSERT INTO role_authorities(ID, UUID, ROLE_ID, AUTHORITY_ID, CREATED_BY, CREATION_DATE, UPDATE_DATE, UPDATED_BY)
+VALUES
+-- ROOT USER PERMISSIONS
+  (1, uuid(), (SELECT r.ID FROM roles r WHERE r.ID = 1), (SELECT a.ID FROM authorities a WHERE a.ID = 1),
+ '85f7a4ef-8498-47c6-8832-8c5050f879f2', '2025-03-16 09:00:00.000', NULL, NULL),
+  (2, uuid(), (SELECT r.ID FROM roles r WHERE r.ID = 1), (SELECT a.ID FROM authorities a WHERE a.ID = 2),
+ '85f7a4ef-8498-47c6-8832-8c5050f879f2', '2025-03-16 09:00:00.000', NULL, NULL),
+  (3, uuid(), (SELECT r.ID FROM roles r WHERE r.ID = 1), (SELECT a.ID FROM authorities a WHERE a.ID = 3),
+ '85f7a4ef-8498-47c6-8832-8c5050f879f2', '2025-03-16 09:00:00.000', NULL, NULL),
+  (4, uuid(), (SELECT r.ID FROM roles r WHERE r.ID = 1), (SELECT a.ID FROM authorities a WHERE a.ID = 4),
+ '85f7a4ef-8498-47c6-8832-8c5050f879f2', '2025-03-16 09:00:00.000', NULL, NULL),
+ 
+ -- ADMINISTRATOR USER PERMISIONS
+ (5, uuid(), (SELECT r.ID FROM roles r WHERE r.ID = 2), (SELECT a.ID FROM authorities a WHERE a.ID = 1),
+ '85f7a4ef-8498-47c6-8832-8c5050f879f2', '2025-03-16 09:00:00.000', NULL, NULL),
+ (6, uuid(), (SELECT r.ID FROM roles r WHERE r.ID = 2), (SELECT a.ID FROM authorities a WHERE a.ID = 2),
+ '85f7a4ef-8498-47c6-8832-8c5050f879f2', '2025-03-16 09:00:00.000', NULL, NULL),
+ (7, uuid(), (SELECT r.ID FROM roles r WHERE r.ID = 2), (SELECT a.ID FROM authorities a WHERE a.ID = 3),
+ '85f7a4ef-8498-47c6-8832-8c5050f879f2', '2025-03-16 09:00:00.000', NULL, NULL),
+ (8, uuid(), (SELECT r.ID FROM roles r WHERE r.ID = 2), (SELECT a.ID FROM authorities a WHERE a.ID = 4),
+ '85f7a4ef-8498-47c6-8832-8c5050f879f2', '2025-03-16 09:00:00.000', NULL, NULL),
+ (9, uuid(), (SELECT r.ID FROM roles r WHERE r.ID = 2), (SELECT a.ID FROM authorities a WHERE a.ID = 5),
+ '85f7a4ef-8498-47c6-8832-8c5050f879f2', '2025-03-16 09:00:00.000', NULL, NULL),
+ (10, uuid(), (SELECT r.ID FROM roles r WHERE r.ID = 2), (SELECT a.ID FROM authorities a WHERE a.ID = 6),
+ '85f7a4ef-8498-47c6-8832-8c5050f879f2', '2025-03-16 09:00:00.000', NULL, NULL),
+ (11, uuid(), (SELECT r.ID FROM roles r WHERE r.ID = 2), (SELECT a.ID FROM authorities a WHERE a.ID = 7),
+ '85f7a4ef-8498-47c6-8832-8c5050f879f2', '2025-03-16 09:00:00.000', NULL, NULL),
+ (12, uuid(), (SELECT r.ID FROM roles r WHERE r.ID = 2), (SELECT a.ID FROM authorities a WHERE a.ID = 8),
+ '85f7a4ef-8498-47c6-8832-8c5050f879f2', '2025-03-16 09:00:00.000', NULL, NULL),
+ (13, uuid(), (SELECT r.ID FROM roles r WHERE r.ID = 2), (SELECT a.ID FROM authorities a WHERE a.ID = 9),
+ '85f7a4ef-8498-47c6-8832-8c5050f879f2', '2025-03-16 09:00:00.000', NULL, NULL),
+ (14, uuid(), (SELECT r.ID FROM roles r WHERE r.ID = 2), (SELECT a.ID FROM authorities a WHERE a.ID = 10),
+ '85f7a4ef-8498-47c6-8832-8c5050f879f2', '2025-03-16 09:00:00.000', NULL, NULL),
+ (15, uuid(), (SELECT r.ID FROM roles r WHERE r.ID = 2), (SELECT a.ID FROM authorities a WHERE a.ID = 11),
+ '85f7a4ef-8498-47c6-8832-8c5050f879f2', '2025-03-16 09:00:00.000', NULL, NULL),
+ (16, uuid(), (SELECT r.ID FROM roles r WHERE r.ID = 2), (SELECT a.ID FROM authorities a WHERE a.ID = 12),
+ '85f7a4ef-8498-47c6-8832-8c5050f879f2', '2025-03-16 09:00:00.000', NULL, NULL),
+ 
+-- REGULAR USER PERMISIONS
+ (17, uuid(), (SELECT r.ID FROM roles r WHERE r.ID = 3), (SELECT a.ID FROM authorities a WHERE a.ID = 1),
+ '85f7a4ef-8498-47c6-8832-8c5050f879f2', '2025-03-16 09:00:00.000', NULL, NULL),
+ (18, uuid(), (SELECT r.ID FROM roles r WHERE r.ID = 3), (SELECT a.ID FROM authorities a WHERE a.ID = 2),
+ '85f7a4ef-8498-47c6-8832-8c5050f879f2', '2025-03-16 09:00:00.000', NULL, NULL),
+ (19, uuid(), (SELECT r.ID FROM roles r WHERE r.ID = 3), (SELECT a.ID FROM authorities a WHERE a.ID = 3),
+ '85f7a4ef-8498-47c6-8832-8c5050f879f2', '2025-03-16 09:00:00.000', NULL, NULL),
+ (20, uuid(), (SELECT r.ID FROM roles r WHERE r.ID = 3), (SELECT a.ID FROM authorities a WHERE a.ID = 13),
+ '85f7a4ef-8498-47c6-8832-8c5050f879f2', '2025-03-16 09:00:00.000', NULL, NULL);

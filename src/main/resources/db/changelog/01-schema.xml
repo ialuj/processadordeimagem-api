@@ -1,0 +1,610 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+         
+ <changeSet id="table_authorities" author="ialuj">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <tableExists tableName="authorities"/>
+      </not>
+    </preConditions>
+    <createTable tableName="authorities">
+      <column name="ID" type="bigint(20)" autoIncrement="true">
+        <constraints primaryKey="true"/>
+      </column>
+      <column name="UUID" type="varchar(200)">
+        <constraints nullable="false" unique="true"/>
+      </column>
+      <column name="CODE" type="varchar(200)">
+        <constraints nullable="false" unique="true"/>
+      </column>
+      <column name="DESCRIPTION" type="varchar(200)">
+        <constraints nullable="false" />
+      </column>
+      <column name="CREATED_BY" type="varchar(200)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="CREATION_DATE" type="datetime">
+        <constraints nullable="false"/>
+      </column>
+      <column name="UPDATED_BY" type="varchar(200)">
+        <constraints nullable="true"/>
+      </column>
+      <column name="UPDATE_DATE" type="datetime">
+        <constraints nullable="true"/>
+      </column>
+    </createTable>
+  </changeSet>
+  <changeSet id="table_roles" author="ialuj">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <tableExists tableName="roles"/>
+      </not>
+    </preConditions>
+    <createTable tableName="roles">
+      <column name="ID" type="bigint(20)" autoIncrement="true">
+        <constraints primaryKey="true"/>
+      </column>
+      <column name="UUID" type="varchar(200)">
+        <constraints nullable="false" unique="true"/>
+      </column>
+      <column name="CODE" type="varchar(200)">
+        <constraints nullable="false" unique="true"/>
+      </column>
+      <column name="DESCRIPTION" type="varchar(200)">
+        <constraints nullable="false" />
+      </column>
+      <column name="CREATED_BY" type="varchar(200)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="CREATION_DATE" type="datetime">
+        <constraints nullable="false"/>
+      </column>
+      <column name="UPDATED_BY" type="varchar(200)">
+        <constraints nullable="true"/>
+      </column>
+      <column name="UPDATE_DATE" type="datetime">
+        <constraints nullable="true"/>
+      </column>
+    </createTable>
+  </changeSet>
+  <changeSet id="table_role_authorities" author="ialuj">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <tableExists tableName="role_authorities"/>
+      </not>
+    </preConditions>
+    <createTable tableName="role_authorities">
+      <column name="ID" type="bigint(20)" autoIncrement="true">
+        <constraints primaryKey="true"/>
+      </column>
+      <column name="UUID" type="varchar(200)">
+        <constraints nullable="false" unique="true"/>
+      </column>
+      <column name="ROLE_ID" type="bigint(20)" >
+        <constraints nullable="false"/>
+      </column>
+      <column name="AUTHORITY_ID" type="bigint(20)" >
+        <constraints nullable="false"/>
+      </column>
+      <column name="CREATED_BY" type="varchar(200)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="CREATION_DATE" type="datetime">
+        <constraints nullable="false"/>
+      </column>
+      <column name="UPDATED_BY" type="varchar(200)">
+        <constraints nullable="true"/>
+      </column>
+      <column name="UPDATE_DATE" type="datetime">
+        <constraints nullable="true"/>
+      </column>
+    </createTable>
+    <addForeignKeyConstraint constraintName="role_authorities_role_id_fk"
+                             baseTableName="role_authorities" baseColumnNames="ROLE_ID"
+                             referencedTableName="roles" referencedColumnNames="ID"/>
+    <addForeignKeyConstraint constraintName="role_authorities_authority_id_fk"
+                             baseTableName="role_authorities" baseColumnNames="AUTHORITY_ID"
+                             referencedTableName="authorities" referencedColumnNames="ID"/>
+  </changeSet>
+  
+  <changeSet id="table_refresh_tokens" author="ialuj">
+    <preConditions onFail="HALT">
+      <not>
+        <tableExists tableName="refresh_tokens"/>
+      </not>
+    </preConditions>
+    <createTable tableName="refresh_tokens">
+      <column name="ID" type="bigint(20)" autoIncrement="true">
+        <constraints primaryKey="true"/>
+      </column>
+      <column name="USER_NAME" type="varchar(200)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="REFRESH_TOKEN" type="varchar(200)">
+        <constraints nullable="false" unique="true"/>
+      </column>
+      <column name="REVOKED" type="boolean">
+        <constraints nullable="false"/>
+      </column>
+      <column name="CREATION_DATE" type="datetime">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+  </changeSet>
+  
+  <changeSet id="table_users" author="ialuj">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <tableExists tableName="users"/>
+      </not>
+    </preConditions>
+    <createTable tableName="users">
+      <column name="ID" type="bigint(20)" autoIncrement="true">
+        <constraints primaryKey="true"/>
+      </column>
+      <column name="UUID" type="varchar(200)">
+        <constraints nullable="false" unique="true"/>
+      </column>
+      <column name="NAME" type="varchar(200)" >
+        <constraints nullable="false"/>
+      </column>
+      <column name="EMAIL" type="varchar(200)">
+        <constraints nullable="false" unique="true"/>
+      </column>
+      <column name="PASSWORD" type="varchar(200)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="CREATED_BY" type="varchar(200)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="CREATION_DATE" type="datetime">
+        <constraints nullable="false"/>
+      </column>
+      <column name="UPDATED_BY" type="varchar(200)">
+        <constraints nullable="true"/>
+      </column>
+      <column name="UPDATE_DATE" type="datetime">
+        <constraints nullable="true"/>
+      </column>
+    </createTable>
+  </changeSet>
+  <changeSet id="table_user_roles" author="ialuj">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <tableExists tableName="user_roles"/>
+      </not>
+    </preConditions>
+    <createTable tableName="user_roles">
+      <column name="ID" type="bigint(20)" autoIncrement="true">
+        <constraints primaryKey="true"/>
+      </column>
+      <column name="UUID" type="varchar(200)">
+        <constraints nullable="false" unique="true"/>
+      </column>
+      <column name="USER_ID" type="bigint(20)" >
+        <constraints nullable="false"/>
+      </column>
+      <column name="ROLE_ID" type="bigint(20)" >
+        <constraints nullable="false"/>
+      </column>
+      <column name="CREATED_BY" type="varchar(200)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="CREATION_DATE" type="datetime">
+        <constraints nullable="false"/>
+      </column>
+      <column name="UPDATED_BY" type="varchar(200)">
+        <constraints nullable="true"/>
+      </column>
+      <column name="UPDATE_DATE" type="datetime">
+        <constraints nullable="true"/>
+      </column>
+    </createTable>
+    <addForeignKeyConstraint constraintName="user_roles_user_id_fk"
+                             baseTableName="user_roles" baseColumnNames="USER_ID"
+                             referencedTableName="users" referencedColumnNames="ID"/>
+    <addForeignKeyConstraint constraintName="user_roles_role_id_fk"
+                             baseTableName="user_roles" baseColumnNames="ROLE_ID"
+                             referencedTableName="roles" referencedColumnNames="ID"/>
+  </changeSet>
+
+  <changeSet id="table_services" author="ialuj">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <tableExists tableName="services"/>
+      </not>
+    </preConditions>
+    <createTable tableName="services">
+      <column name="ID" type="bigint(20)" autoIncrement="true">
+        <constraints primaryKey="true"/>
+      </column>
+      <column name="UUID" type="varchar(200)">
+        <constraints nullable="false" unique="true"/>
+      </column>
+      <column name="NAME" type="varchar(200)" >
+        <constraints nullable="false"/>
+      </column>
+      <column name="DESCRIPTION" type="varchar(200)">
+        <constraints nullable="false" unique="true"/>
+      </column>
+      <column name="PLAN" type="varchar(200)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="ACTIVE" type="char(1)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="CREATED_BY" type="varchar(200)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="CREATION_DATE" type="datetime">
+        <constraints nullable="false"/>
+      </column>
+      <column name="UPDATED_BY" type="varchar(200)">
+        <constraints nullable="true"/>
+      </column>
+      <column name="UPDATE_DATE" type="datetime">
+        <constraints nullable="true"/>
+      </column>
+    </createTable>
+  </changeSet>
+
+ 
+  <changeSet id="table_subscriptions" author="ialuj">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <tableExists tableName="subscriptions"/>
+      </not>
+    </preConditions>
+    <createTable tableName="subscriptions">
+      <column name="ID" type="bigint(20)" autoIncrement="true">
+        <constraints primaryKey="true"/>
+      </column>
+      <column name="UUID" type="varchar(200)">
+        <constraints nullable="false" unique="true"/>
+      </column>
+      <column name="PLAN" type="varchar(200)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="USER_ID" type="bigint(20)" >
+        <constraints nullable="false"/>
+      </column>
+      <column name="ACTIVE" type="char(1)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="START_DATE" type="datetime">
+        <constraints nullable="false"/>
+      </column>
+      <column name="END_DATE" type="datetime">
+        <constraints nullable="true"/>
+      </column>
+       <column name="CREATED_BY" type="varchar(200)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="CREATION_DATE" type="datetime">
+        <constraints nullable="false"/>
+      </column>
+      <column name="UPDATED_BY" type="varchar(200)">
+        <constraints nullable="true"/>
+      </column>
+      <column name="UPDATE_DATE" type="datetime">
+        <constraints nullable="true"/>
+      </column>
+    </createTable>
+    <addForeignKeyConstraint constraintName="subscriptions_user_id_fk"
+                             baseTableName="subscriptions" baseColumnNames="USER_ID"
+                             referencedTableName="users" referencedColumnNames="ID"/>
+  </changeSet>
+  <changeSet id="table_quotas" author="ialuj">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <tableExists tableName="quotas"/>
+      </not>
+    </preConditions>
+    <createTable tableName="quotas">
+      <column name="ID" type="bigint(20)" autoIncrement="true">
+        <constraints primaryKey="true"/>
+      </column>
+      <column name="UUID" type="varchar(200)">
+        <constraints nullable="false" unique="true"/>
+      </column>
+      <column name="SUBSCRIPTION_ID" type="bigint(20)" >
+        <constraints nullable="false"/>
+      </column>
+      <column name="QUOTA" type="bigint(20)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="LAST_RESET_DATE" type="datetime">
+        <constraints nullable="true"/>
+      </column>
+       <column name="CREATED_BY" type="varchar(200)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="CREATION_DATE" type="datetime">
+        <constraints nullable="false"/>
+      </column>
+      <column name="UPDATED_BY" type="varchar(200)">
+        <constraints nullable="true"/>
+      </column>
+      <column name="UPDATE_DATE" type="datetime">
+        <constraints nullable="true"/>
+      </column>
+    </createTable>
+    <addForeignKeyConstraint constraintName="quotas_subscription_id_fk"
+                             baseTableName="quotas" baseColumnNames="SUBSCRIPTION_ID"
+                             referencedTableName="subscriptions" referencedColumnNames="ID"/>
+  </changeSet>
+  <changeSet id="table_images" author="ialuj">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <tableExists tableName="images"/>
+      </not>
+    </preConditions>
+    <createTable tableName="images">
+      <column name="ID" type="bigint(20)" autoIncrement="true">
+        <constraints primaryKey="true"/>
+      </column>
+      <column name="UUID" type="varchar(200)">
+        <constraints nullable="false" unique="true"/>
+      </column>
+      <column name="ORIGINAL_FILE_NAME" type="varchar(200)" >
+        <constraints nullable="false"/>
+      </column>
+       <column name="FILE_PATH" type="varchar(200)" >
+        <constraints nullable="false"/>
+      </column>
+      <column name="WIDTH" type="bigint(20)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="HEIGHT" type="bigint(20)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="STATUS" type="varchar(200)" >
+        <constraints nullable="false"/>
+      </column>
+      <column name="FILTER" type="varchar(200)" >
+        <constraints nullable="false"/>
+      </column>
+      <column name="USER_ID" type="bigint(20)" >
+        <constraints nullable="false"/>
+      </column>
+       <column name="CREATED_BY" type="varchar(200)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="CREATION_DATE" type="datetime">
+        <constraints nullable="false"/>
+      </column>
+      <column name="UPDATED_BY" type="varchar(200)">
+        <constraints nullable="true"/>
+      </column>
+      <column name="UPDATE_DATE" type="datetime">
+        <constraints nullable="true"/>
+      </column>
+    </createTable>
+    <addForeignKeyConstraint constraintName="images_user_id_fk"
+                             baseTableName="images" baseColumnNames="USER_ID"
+                             referencedTableName="users" referencedColumnNames="ID"/>
+  </changeSet>
+  <changeSet id="table_image_processing_requests" author="ialuj">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <tableExists tableName="image_processing_requests"/>
+      </not>
+    </preConditions>
+    <createTable tableName="image_processing_requests">
+      <column name="ID" type="bigint(20)" autoIncrement="true">
+        <constraints primaryKey="true"/>
+      </column>
+      <column name="UUID" type="varchar(200)">
+        <constraints nullable="false" unique="true"/>
+      </column>
+      <column name="IMAGE_URL" type="varchar(200)" >
+        <constraints nullable="false"/>
+      </column>
+      <column name="RESIZE_PERCENTAGE" type="bigint(20)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="FILTER" type="varchar(200)" >
+        <constraints nullable="false"/>
+      </column>
+      <column name="REQUEST_TIME" type="datetime">
+        <constraints nullable="false"/>
+      </column>
+      <column name="COMPLETION_TIME" type="datetime">
+        <constraints nullable="true"/>
+      </column>
+      <column name="IMAGE_ID" type="bigint(20)" >
+        <constraints nullable="false"/>
+      </column>
+       <column name="CREATED_BY" type="varchar(200)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="CREATION_DATE" type="datetime">
+        <constraints nullable="false"/>
+      </column>
+      <column name="UPDATED_BY" type="varchar(200)">
+        <constraints nullable="true"/>
+      </column>
+      <column name="UPDATE_DATE" type="datetime">
+        <constraints nullable="true"/>
+      </column>
+    </createTable>
+    <addForeignKeyConstraint constraintName="iprqs_image_id_fk"
+                             baseTableName="image_processing_requests" baseColumnNames="IMAGE_ID"
+                             referencedTableName="images" referencedColumnNames="ID"/>
+  </changeSet>
+  <changeSet id="table_image_processing_results" author="ialuj">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <tableExists tableName="image_processing_results"/>
+      </not>
+    </preConditions>
+    <createTable tableName="image_processing_results">
+      <column name="ID" type="bigint(20)" autoIncrement="true">
+        <constraints primaryKey="true"/>
+      </column>
+      <column name="UUID" type="varchar(200)">
+        <constraints nullable="false" unique="true"/>
+      </column>
+      <column name="PROCESSED_FILE_URL" type="varchar(200)" >
+        <constraints nullable="false"/>
+      </column>
+      <column name="STATUS" type="varchar(200)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="ERROR_MESSAGE" type="varchar(200)" >
+        <constraints nullable="false"/>
+      </column>
+      <column name="RESULT_TIME" type="datetime">
+        <constraints nullable="false"/>
+      </column>
+      <column name="IMAGE_PROCESSING_REQUEST_ID" type="bigint(20)" >
+        <constraints nullable="false"/>
+      </column>
+       <column name="CREATED_BY" type="varchar(200)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="CREATION_DATE" type="datetime">
+        <constraints nullable="false"/>
+      </column>
+      <column name="UPDATED_BY" type="varchar(200)">
+        <constraints nullable="true"/>
+      </column>
+      <column name="UPDATE_DATE" type="datetime">
+        <constraints nullable="true"/>
+      </column>
+    </createTable>
+    <addForeignKeyConstraint constraintName="iprts_image_id_fk"
+                             baseTableName="image_processing_requests" baseColumnNames="IMAGE_ID"
+                             referencedTableName="images" referencedColumnNames="ID"/>
+  </changeSet>
+
+
+  <changeSet id="INSERT_USERS" author="ialuj" >
+    <preConditions onFail="MARK_RAN">
+      <sqlCheck expectedResult="0">
+        SELECT COUNT(*)
+        FROM users;
+      </sqlCheck>
+    </preConditions>
+    <sqlFile path="db/changelog/files/users.sql" />
+  </changeSet>
+
+  <changeSet id="INSERT_ROLES" author="ialuj" >
+    <preConditions onFail="MARK_RAN">
+      <sqlCheck expectedResult="0">
+        SELECT COUNT(*)
+        FROM roles;
+      </sqlCheck>
+    </preConditions>
+    <sqlFile path="db/changelog/files/roles.sql" />
+  </changeSet>
+
+  <changeSet id="INSERT_USER_ROLES" author="ialuj" >
+    <preConditions onFail="MARK_RAN">
+      <sqlCheck expectedResult="0">
+        SELECT COUNT(*)
+        FROM user_roles;
+      </sqlCheck>
+    </preConditions>
+    <sqlFile path="db/changelog/files/user_roles.sql" />
+  </changeSet>
+
+  <changeSet id="INSERT_REFRESH_TOKENS" author="ialuj" >
+    <preConditions onFail="MARK_RAN">
+      <sqlCheck expectedResult="0">
+        SELECT COUNT(*)
+        FROM refresh_tokens;
+      </sqlCheck>
+    </preConditions>
+    <sqlFile path="db/changelog/files/refresh_tokens.sql" />
+  </changeSet>
+
+  <changeSet id="INSERT_AUTHORITIES" author="ialuj" >
+    <preConditions onFail="MARK_RAN">
+      <sqlCheck expectedResult="0">
+        SELECT COUNT(*)
+        FROM authorities;
+      </sqlCheck>
+    </preConditions>
+    <sqlFile path="db/changelog/files/authorities.sql" />
+  </changeSet>
+
+  <changeSet id="INSERT_ROLE_AUTHORITIES" author="ialuj" >
+    <preConditions onFail="MARK_RAN">
+      <sqlCheck expectedResult="0">
+        SELECT COUNT(*)
+        FROM role_authorities;
+      </sqlCheck>
+    </preConditions>
+    <sqlFile path="db/changelog/files/role_authorities.sql" />
+  </changeSet>
+  
+  <changeSet id="INSERT_SERVICES" author="ialuj" >
+    <preConditions onFail="MARK_RAN">
+      <sqlCheck expectedResult="0">
+        SELECT COUNT(*)
+        FROM services;
+      </sqlCheck>
+    </preConditions>
+    <sqlFile path="db/changelog/files/services.sql" />
+  </changeSet>
+  
+  <changeSet id="FOREIGN_FK_CREATED_BY" author="ialuj">
+    <preConditions>
+      <not>
+        <and>
+          <foreignKeyConstraintExists foreignKeyName="roles_created_by_fk" foreignKeyTableName="roles"/>
+          <foreignKeyConstraintExists foreignKeyName="authorities_created_by_fk" foreignKeyTableName="authorities"/>
+          <foreignKeyConstraintExists foreignKeyName="role_authorities_created_by_fk" foreignKeyTableName="role_authorities"/>
+          <foreignKeyConstraintExists foreignKeyName="users_created_by_fk" foreignKeyTableName="users"/>
+          <foreignKeyConstraintExists foreignKeyName="user_roles_created_by_fk" foreignKeyTableName="user_roles"/>
+          <foreignKeyConstraintExists foreignKeyName="services_created_by_fk" foreignKeyTableName="services"/>
+          <foreignKeyConstraintExists foreignKeyName="subscriptions_created_by_fk" foreignKeyTableName="subscriptions"/>
+          <foreignKeyConstraintExists foreignKeyName="quotas_created_by_fk" foreignKeyTableName="quotas"/>
+          <foreignKeyConstraintExists foreignKeyName="images_created_by_fk" foreignKeyTableName="images"/>
+          <foreignKeyConstraintExists foreignKeyName="iprqs_created_by_fk" foreignKeyTableName="image_processing_requests"/>
+          <foreignKeyConstraintExists foreignKeyName="iprts_created_by_fk" foreignKeyTableName="image_processing_results"/>
+        </and>
+      </not>
+    </preConditions>
+    <addForeignKeyConstraint constraintName="roles_created_by_fk"
+                             baseTableName="roles" baseColumnNames="CREATED_BY"
+                             referencedTableName="users" referencedColumnNames="uuid"/>
+    <addForeignKeyConstraint constraintName="authorities_created_by_fk"
+                             baseTableName="authorities" baseColumnNames="CREATED_BY"
+                             referencedTableName="users" referencedColumnNames="uuid"/>
+    <addForeignKeyConstraint constraintName="role_authorities_created_by_fk"
+                             baseTableName="role_authorities" baseColumnNames="CREATED_BY"
+                             referencedTableName="users" referencedColumnNames="uuid"/>
+    <addForeignKeyConstraint constraintName="users_created_by_fk"
+                             baseTableName="users" baseColumnNames="CREATED_BY"
+                             referencedTableName="users" referencedColumnNames="uuid"/>
+    <addForeignKeyConstraint constraintName="user_roles_created_by_fk"
+                             baseTableName="user_roles" baseColumnNames="CREATED_BY"
+                             referencedTableName="users" referencedColumnNames="uuid"/>
+    <addForeignKeyConstraint constraintName="services_created_by_fk"
+                             baseTableName="services" baseColumnNames="CREATED_BY"
+                             referencedTableName="users" referencedColumnNames="uuid"/>
+    <addForeignKeyConstraint constraintName="subscriptions_created_by_fk"
+                             baseTableName="subscriptions" baseColumnNames="CREATED_BY"
+                             referencedTableName="users" referencedColumnNames="uuid"/>
+    <addForeignKeyConstraint constraintName="quotas_created_by_fk"
+                             baseTableName="quotas" baseColumnNames="CREATED_BY"
+                             referencedTableName="users" referencedColumnNames="uuid"/>
+    <addForeignKeyConstraint constraintName="images_created_by_fk"
+                             baseTableName="images" baseColumnNames="CREATED_BY"
+                             referencedTableName="users" referencedColumnNames="uuid"/>
+    <addForeignKeyConstraint constraintName="iprqs_created_by_fk"
+                             baseTableName="image_processing_requests" baseColumnNames="CREATED_BY"
+                             referencedTableName="users" referencedColumnNames="uuid"/>
+    <addForeignKeyConstraint constraintName="iprts_created_by_fk"
+                             baseTableName="image_processing_results" baseColumnNames="CREATED_BY"
+                             referencedTableName="users" referencedColumnNames="uuid"/>
+  </changeSet>
+
+</databaseChangeLog>
