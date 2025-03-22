@@ -33,6 +33,7 @@ import br.com.bixtecnologia.processadordeimagem.repositories.ImageProcessingResu
 import br.com.bixtecnologia.processadordeimagem.repositories.ImageRepository;
 import br.com.bixtecnologia.processadordeimagem.repositories.SubscriptionRepository;
 import br.com.bixtecnologia.processadordeimagem.repositories.UserRepository;
+import br.com.bixtecnologia.processadordeimagem.services.email.EmailSender;
 import br.com.bixtecnologia.processadordeimagem.services.util.BaseService;
 import br.com.bixtecnologia.processadordeimagem.services.util.BusinessException;
 import br.com.bixtecnologia.processadordeimagem.transform.IImageProcessingRequestTransformer;
@@ -80,6 +81,9 @@ public class ImageProcessingServiceImpl extends BaseService implements IImagePro
 	@Autowired
 	private MessageService messageService;
 
+	@Autowired
+	private EmailSender emailSender;
+
 	private static final Logger logger = Logger.getLogger(ImageProcessingServiceImpl.class.getName());
 
 	@Override
@@ -89,13 +93,14 @@ public class ImageProcessingServiceImpl extends BaseService implements IImagePro
 			User loggedUser = Optional.of(
 					this.userRepository.findByUuid(request.getUuid()).orElseThrow(() -> new BusinessException(null)))
 					.get();
-			
+
 			Subscription subscription = getAndValidateSubscription(loggedUser);
-			if(SubscriptionPlan.BASIC.equals(subscription.getPlan())) {
+			if (SubscriptionPlan.BASIC.equals(subscription.getPlan())) {
 				List<Quota> quotas = quotaService.getQuotaBySubscriptionId(subscription.getId());
 				Quota quota = quotas.get(0);
-				if(quota.getQuota() < 1) {
-					throw new BusinessException(messageService.getFormattedMessage("user.quota.maximum..expired", new String[] {loggedUser.getName()}));
+				if (quota.getQuota() < 1) {
+					throw new BusinessException(messageService.getFormattedMessage("user.quota.maximum..expired",
+							new String[] { loggedUser.getName() }));
 				}
 				quotaService.resetQuota(subscription.getId(), loggedUser);
 			}
@@ -145,6 +150,15 @@ public class ImageProcessingServiceImpl extends BaseService implements IImagePro
 			imageProcessingRequestDTO.setImage(imageDTO);
 			ImageProcessingResultDTO imageProcessingResultDTO = imageProcessingResultTransformer
 					.toDTO(imageProcessingResult);
+
+			try {
+				emailSender.sendProcessingResultEmail(loggedUser.getName(), imageProcessingResult.getProcessedFileUrl(),
+						loggedUser.getEmail());
+			} catch (Exception e) {
+				logger.info(e.getMessage());
+				throw new BusinessException(
+						this.getMessageService().getFormattedMessage("email.send.error", new String[] { loggedUser.getEmail() }));
+			}
 
 			return imageProcessingResultDTO;
 		} catch (BusinessException e) {

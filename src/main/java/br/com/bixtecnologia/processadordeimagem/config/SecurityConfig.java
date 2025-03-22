@@ -39,6 +39,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/users/register").permitAll()
                         .requestMatchers("/api/services/**").permitAll()
                         .requestMatchers("/api/subscriptions/**").permitAll()
+                        .requestMatchers("/swagger-ui/**").permitAll()
+                        .requestMatchers("/v3/**").permitAll()
                         .requestMatchers("/error").permitAll()
                         .anyRequest().authenticated()
                 ).csrf(AbstractHttpConfigurer::disable)

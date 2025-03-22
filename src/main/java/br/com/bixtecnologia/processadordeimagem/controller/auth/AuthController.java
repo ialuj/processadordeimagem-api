@@ -22,6 +22,11 @@ import br.com.bixtecnologia.processadordeimagem.dto.token.AuthRequest;
 import br.com.bixtecnologia.processadordeimagem.dto.token.RefreshTokenDTO;
 import br.com.bixtecnologia.processadordeimagem.security.JwtUtil;
 import br.com.bixtecnologia.processadordeimagem.services.token.RefreshTokenService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -39,6 +44,14 @@ public class AuthController {
         this.authenticationManager = authenticationManager;
     }
 
+    @Operation(summary = "Login", description = "Recebe o username e password.")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Retorna o Objeto de Usuario logado com os tokens de acesso, refresh, etc.",
+                content = @Content(mediaType = "application/json",
+                schema = @Schema(example = "{\"message\": \"Login feito com sucesso\"}"))),
+        @ApiResponse(responseCode = "400", description = "Requisição inválida"),
+        @ApiResponse(responseCode = "500", description = "Erro interno no servidor")
+    })
     @PostMapping("/login")
     public UserDTO login(@RequestBody AuthRequest request) {
     	    	
