@@ -27,7 +27,7 @@ Antes de executar, certifique-se de ter instalado:
 
 # Passos para execução
 
-# 1. Clone o repositório
+# 1. Clone o repositório (branch - develop)
 
 git clone https://github.com/ialuj/processadordeimagem-api.git
 cd processadordeimagem-api
