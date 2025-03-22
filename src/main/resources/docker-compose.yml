@@ -46,6 +46,8 @@ services:
       SPRING_RABBITMQ_PASSWORD: guest
     ports:
       - "8080:8080"
+    volumes:
+      - /app/processadordeimagem:/app/processadordeimagem
 
 volumes:
   mariadb_data:
