@@ -90,8 +90,10 @@ public class ImageProcessingServiceImpl extends BaseService implements IImagePro
 	@Transactional
 	public ImageProcessingResultDTO processImage(ImageProcessingRequestDTO request) throws BusinessException {
 		try {
-			User loggedUser = Optional.of(
-					this.userRepository.findByUuid(request.getUuid()).orElseThrow(() -> new BusinessException(null)))
+			User loggedUser = Optional
+					.of(this.userRepository.findByUuid(request.getCreatedBy())
+							.orElseThrow(() -> new BusinessException(messageService
+									.getFormattedMessage("user.uuid.not.found", new String[] { request.getCreatedBy() }))))
 					.get();
 
 			Subscription subscription = getAndValidateSubscription(loggedUser);
@@ -156,12 +158,13 @@ public class ImageProcessingServiceImpl extends BaseService implements IImagePro
 						loggedUser.getEmail());
 			} catch (Exception e) {
 				logger.info(e.getMessage());
-				throw new BusinessException(
-						this.getMessageService().getFormattedMessage("email.send.error", new String[] { loggedUser.getEmail() }));
+				throw new BusinessException(this.getMessageService().getFormattedMessage("email.send.error",
+						new String[] { loggedUser.getEmail() }));
 			}
 
 			return imageProcessingResultDTO;
 		} catch (BusinessException e) {
+			e.printStackTrace();
 			logger.log(Level.SEVERE, errorMessage(), e);
 			throw new BusinessException(errorMessage());
 		}
@@ -241,7 +244,7 @@ public class ImageProcessingServiceImpl extends BaseService implements IImagePro
 		if (request.getImage() == null) {
 			throw new BusinessException(messageService.getFormattedMessage("image.request.image.not.found", null));
 		}
-		if (request.getResizePercentage() == null || StringUtils.isBlank(request.getFilter())) {
+		if (request.getResizePercentage() == null && StringUtils.isBlank(request.getFilter())) {
 			throw new BusinessException(
 					messageService.getFormattedMessage("image.request.filter.or.resizePercentage.not.found", null));
 		}

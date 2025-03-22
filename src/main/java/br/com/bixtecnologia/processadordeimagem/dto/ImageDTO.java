@@ -1,8 +1,11 @@
 package br.com.bixtecnologia.processadordeimagem.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 /**
  * @author Jose Julai Ritsure
  */
+@JsonIgnoreProperties({"status", "filter", "userId", "user"})
 public class ImageDTO extends BaseModelDTO {
 
 	/**

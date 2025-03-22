@@ -3,10 +3,14 @@ package br.com.bixtecnologia.processadordeimagem.dto;
 import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import jakarta.validation.constraints.NotBlank;
 
 /**
  * @author Jose Julai Ritsure
  */
+@JsonIgnoreProperties({"imageId", "requestTime", "completionTime"})
 public class ImageProcessingRequestDTO extends BaseModelDTO {
 
 	/**
@@ -18,6 +22,7 @@ public class ImageProcessingRequestDTO extends BaseModelDTO {
 	
 	private ImageDTO image;
 	
+	@NotBlank(message = "Indique a URL da Imagem")
 	private String imageUrl;
 	
 	private Double resizePercentage;

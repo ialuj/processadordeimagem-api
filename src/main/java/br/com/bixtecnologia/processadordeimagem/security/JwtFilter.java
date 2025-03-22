@@ -2,6 +2,8 @@ package br.com.bixtecnologia.processadordeimagem.security;
 
 import java.io.IOException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -11,7 +13,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.UnsupportedJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -20,6 +21,8 @@ import jakarta.servlet.http.HttpServletResponse;
 
 @Component
 public class JwtFilter extends OncePerRequestFilter {
+
+    private static final Logger logger = LoggerFactory.getLogger(JwtFilter.class);
 
     private final JwtUtil jwtUtil;
     private final UserDetailsService userDetailsService;
@@ -37,10 +40,12 @@ public class JwtFilter extends OncePerRequestFilter {
 
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             String token = authorizationHeader.substring(7);
-            
+            logger.info("Token extracted: {}", token);
+
             try {
-                // Valida o token antes de extrair claims
+                // Validate token
                 if (jwtUtil.validateToken(token)) {
+                    logger.info("Token is valid.");
                     Claims claims = jwtUtil.extractClaims(token);
                     String username = claims.getSubject();
 
@@ -51,15 +56,20 @@ public class JwtFilter extends OncePerRequestFilter {
                                 userDetails, null, userDetails.getAuthorities()
                         );
                         SecurityContextHolder.getContext().setAuthentication(authToken);
+                        logger.info("User authenticated: {}", username);
                     }
                 }
             } catch (ExpiredJwtException e) {
+                logger.error("Token expired: {}", e.getMessage());
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token expirado");
                 return;
-            } catch (UnsupportedJwtException | MalformedJwtException | SignatureException e) {
+            } catch (UnsupportedJwtException | MalformedJwtException e) {
+                logger.error("Invalid token: {}", e.getMessage());
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token inválido");
                 return;
             } catch (Exception e) {
+            	e.printStackTrace();
+                logger.error("Error processing token: {}", e.getMessage());
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Erro ao processar token");
                 return;
             }

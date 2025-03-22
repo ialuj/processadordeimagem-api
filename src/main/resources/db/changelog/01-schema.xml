@@ -367,7 +367,7 @@
         <constraints nullable="false"/>
       </column>
       <column name="FILTER" type="varchar(200)" >
-        <constraints nullable="false"/>
+        <constraints nullable="true"/>
       </column>
       <column name="USER_ID" type="bigint(20)" >
         <constraints nullable="false"/>
@@ -406,10 +406,10 @@
         <constraints nullable="false"/>
       </column>
       <column name="RESIZE_PERCENTAGE" type="bigint(20)">
-        <constraints nullable="false"/>
+        <constraints nullable="true"/>
       </column>
       <column name="FILTER" type="varchar(200)" >
-        <constraints nullable="false"/>
+        <constraints nullable="true"/>
       </column>
       <column name="REQUEST_TIME" type="datetime">
         <constraints nullable="false"/>

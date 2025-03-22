@@ -47,7 +47,7 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - /app/processadordeimagem:/app/processadordeimagem
+      - ./target:/target
 
 volumes:
   mariadb_data:
