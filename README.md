@@ -64,7 +64,7 @@ Para ver os endpoints disponíveis, acesse:
 
 Você pode testar os endpoints via **Postman**, **cURL**, ou diretamente pelo **Swagger UI**.
 
-- Primeiro crie um usuário no seguinte endpoint: http://localhost:8082/api/users/register
+- Primeiro crie um usuário no seguinte endpoint: http://localhost:8080/api/users/register
 
 {
 "name": "Seu nome",
