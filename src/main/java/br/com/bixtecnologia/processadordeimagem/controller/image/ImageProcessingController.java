@@ -39,7 +39,7 @@ public class ImageProcessingController extends BaseController {
 		try {
 			emailSender.sendProcessingRequestEmail(userDTO.getName(), userDTO.getEmail());
 		} catch (Exception e) {
-			ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 					.body(messageService.getFormattedMessage("email.send.error", new String[] { userDTO.getEmail() }));
 		}
 		imageProcessingProducer.sendMessage(request);

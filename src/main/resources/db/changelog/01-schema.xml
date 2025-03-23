@@ -451,16 +451,16 @@
         <constraints nullable="false" unique="true"/>
       </column>
       <column name="PROCESSED_FILE_URL" type="varchar(200)" >
-        <constraints nullable="false"/>
+        <constraints nullable="true"/>
       </column>
       <column name="STATUS" type="varchar(200)">
         <constraints nullable="false"/>
       </column>
       <column name="ERROR_MESSAGE" type="varchar(200)" >
-        <constraints nullable="false"/>
+        <constraints nullable="true"/>
       </column>
       <column name="RESULT_TIME" type="datetime">
-        <constraints nullable="false"/>
+        <constraints nullable="true"/>
       </column>
       <column name="IMAGE_PROCESSING_REQUEST_ID" type="bigint(20)" >
         <constraints nullable="false"/>

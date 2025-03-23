@@ -31,7 +31,7 @@ public class ImageProcessingResult extends BaseModel {
     @JoinColumn(name = "IMAGE_PROCESSING_REQUEST_ID", updatable = false, insertable = false)
     private ImageProcessingRequest imageProcessingRequest;
 	
-	@Column(name = "PROCESSED_FILE_URL", nullable = false)
+	@Column(name = "PROCESSED_FILE_URL")
     private String processedFileUrl;
     
     @Column(name = "STATUS", nullable = false)
@@ -41,7 +41,7 @@ public class ImageProcessingResult extends BaseModel {
     @Column(name = "ERROR_MESSAGE")
     private String errorMessage;
 
-    @Column(name = "RESULT_TIME", nullable = false)
+    @Column(name = "RESULT_TIME")
     private LocalDateTime resultTime;
 
 	public Long getImageProcessingRequestId() {

@@ -39,7 +39,7 @@ public class EmailSender {
     }
     
     public void sendProcessingResultEmail(String name, String bodyPart, String destEmail) throws Exception {
-        String htmlTemplate = emailService.loadHtmlTemplate("imageProcessingRequestNotificationTemplate");
+        String htmlTemplate = emailService.loadHtmlTemplate("imageProcessingResultNotificationTemplate");
 
         Map<String, String> variables = new HashMap<>();
         variables.put("name", name);

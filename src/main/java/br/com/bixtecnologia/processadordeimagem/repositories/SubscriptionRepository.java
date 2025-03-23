@@ -16,10 +16,10 @@ import br.com.bixtecnologia.processadordeimagem.domain.utils.SubscriptionPlan;
 @Repository
 public interface SubscriptionRepository extends JpaRepository<Subscription, Long> {
 	
-	@Query("select s from Subscription s where s.userId = :userId and s.isActive = true and s.endDate is NULL")
+	@Query("select s from Subscription s where s.userId = :userId and s.isActive = 1 and s.endDate is NULL")
 	public Optional<Subscription> findByUserId(Long userId);
 
-	@Query("select s from Subscription s where s.plan = :plan and s.isActive = true and s.endDate is NULL")
+	@Query("select s from Subscription s where s.plan = :plan and s.isActive = 1 and s.endDate is NULL")
 	public List<Subscription> findByPlan(SubscriptionPlan plan);
 
 }

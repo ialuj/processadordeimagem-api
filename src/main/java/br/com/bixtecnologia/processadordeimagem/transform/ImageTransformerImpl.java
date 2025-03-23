@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import br.com.bixtecnologia.processadordeimagem.domain.models.Image;
@@ -73,7 +74,8 @@ public class ImageTransformerImpl extends DTOTransformerImpl<Image, ImageDTO> im
 		target.setWidth(source.getWidth());
 		target.setOriginalFileName(source.getOriginalFileName());
 		target.setStatus(ProcessingStatus.toEnum(source.getStatus()));
-		target.setFilter(Filter.toEnum(source.getFilter()));
+		if (!StringUtils.isBlank(source.getFilter()))
+			target.setFilter(Filter.toEnum(source.getFilter()));
 		target.setUserId(source.getUserId());
 		return target;
 	}
@@ -86,7 +88,8 @@ public class ImageTransformerImpl extends DTOTransformerImpl<Image, ImageDTO> im
 		target.setWidth(source.getWidth());
 		target.setOriginalFileName(source.getOriginalFileName());
 		target.setStatus(source.getStatus().getDescription());
-		target.setFilter(source.getFilter().getDescription());
+		if (source.getFilter() != null)
+			target.setFilter(source.getFilter().getDescription());
 		target.setUserId(source.getUserId());
 		return target;
 	}

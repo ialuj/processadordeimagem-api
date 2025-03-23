@@ -96,7 +96,7 @@ public class ImageProcessingServiceImpl extends BaseService implements IImagePro
 									.getFormattedMessage("user.uuid.not.found", new String[] { request.getCreatedBy() }))))
 					.get();
 
-			Subscription subscription = getAndValidateSubscription(loggedUser);
+			/*Subscription subscription = getAndValidateSubscription(loggedUser);
 			if (SubscriptionPlan.BASIC.equals(subscription.getPlan())) {
 				List<Quota> quotas = quotaService.getQuotaBySubscriptionId(subscription.getId());
 				Quota quota = quotas.get(0);
@@ -105,7 +105,7 @@ public class ImageProcessingServiceImpl extends BaseService implements IImagePro
 							new String[] { loggedUser.getName() }));
 				}
 				quotaService.resetQuota(subscription.getId(), loggedUser);
-			}
+			}*/
 
 			this.validateImageProcessingRequest(request);
 
@@ -116,6 +116,7 @@ public class ImageProcessingServiceImpl extends BaseService implements IImagePro
 			image.setUuid(this.generateUuid());
 			image.setCreatedBy(loggedUser.getUuid());
 			image.setCreationDate(DateUtils.getCurrentLocalDateTime());
+			image.setStatus(ProcessingStatus.PENDING);
 			this.imageRepository.save(image);
 
 			imageProcessingRequest.setImage(image);
@@ -138,7 +139,12 @@ public class ImageProcessingServiceImpl extends BaseService implements IImagePro
 			imageProcessingRequest.setUpdatedBy(this.generateUuid());
 			imageProcessingRequest.setUpdateDate(DateUtils.getCurrentLocalDateTime());
 			this.imageProcessingRequestRepository.save(imageProcessingRequest);
-
+			
+			image.setUpdatedBy(this.generateUuid());
+			image.setUpdateDate(DateUtils.getCurrentLocalDateTime());
+			image.setStatus(ProcessingStatus.COMPLETED);
+			this.imageRepository.save(image);
+			
 			imageProcessingResult.setResultTime(DateUtils.getCurrentLocalDateTime());
 			imageProcessingResult.setUpdatedBy(this.generateUuid());
 			imageProcessingResult.setUpdateDate(DateUtils.getCurrentLocalDateTime());
@@ -176,32 +182,41 @@ public class ImageProcessingServiceImpl extends BaseService implements IImagePro
 	}
 
 	private File processImageFile(ImageProcessingRequestDTO request) throws BusinessException {
-		try {
-			BufferedImage originalImage = ImageIO.read(new File(request.getImageUrl()));
+	    try {
+	        // Verifica se a URL é um caminho de arquivo no sistema local
+	        File imageFile = new File(request.getImageUrl());
+	        
+	        // Verifica se o arquivo existe
+	        if (!imageFile.exists()) {
+	            throw new BusinessException("A imagem não foi encontrada: " + request.getImageUrl());
+	        }
 
-			int newWidth = (int) (originalImage.getWidth() * (request.getResizePercentage() / 100.0));
-			int newHeight = (int) (originalImage.getHeight() * (request.getResizePercentage() / 100.0));
-			BufferedImage resizedImage = new BufferedImage(newWidth, newHeight, originalImage.getType());
-			Graphics2D g = resizedImage.createGraphics();
-			g.drawImage(originalImage, 0, 0, newWidth, newHeight, null);
-			g.dispose();
+	        BufferedImage originalImage = ImageIO.read(imageFile);
 
-			if ("Grayscale".equalsIgnoreCase(request.getFilter())) {
-				resizedImage = applyGrayscaleFilter(resizedImage);
-			} else if ("Sepia".equalsIgnoreCase(request.getFilter())) {
-				resizedImage = applySepiaFilter(resizedImage);
-			}
+	        int newWidth = (int) (originalImage.getWidth() * (request.getResizePercentage() / 100.0));
+	        int newHeight = (int) (originalImage.getHeight() * (request.getResizePercentage() / 100.0));
+	        BufferedImage resizedImage = new BufferedImage(newWidth, newHeight, originalImage.getType());
+	        Graphics2D g = resizedImage.createGraphics();
+	        g.drawImage(originalImage, 0, 0, newWidth, newHeight, null);
+	        g.dispose();
 
-			File output = new File(System.getProperty("java.io.tmpdir"),
-					"processed_image_" + DateUtils.getCurrentDate().getTime() + ".jpg");
-			ImageIO.write(resizedImage, "jpg", output);
+	        if ("Grayscale".equalsIgnoreCase(request.getFilter())) {
+	            resizedImage = applyGrayscaleFilter(resizedImage);
+	        } else if ("Sepia".equalsIgnoreCase(request.getFilter())) {
+	            resizedImage = applySepiaFilter(resizedImage);
+	        }
 
-			return output;
-		} catch (IOException e) {
-			logger.log(Level.SEVERE, errorMessage(), e);
-			throw new BusinessException(errorMessage());
-		}
+	        File output = new File(System.getProperty("java.io.tmpdir"),
+	                "processed_image_" + DateUtils.getCurrentDate().getTime() + ".jpg");
+	        ImageIO.write(resizedImage, "jpg", output);
+
+	        return output;
+	    } catch (IOException e) {
+	        logger.log(Level.SEVERE, errorMessage(), e);
+	        throw new BusinessException(errorMessage());
+	    }
 	}
+
 
 	private BufferedImage applyGrayscaleFilter(BufferedImage image) {
 		for (int y = 0; y < image.getHeight(); y++) {

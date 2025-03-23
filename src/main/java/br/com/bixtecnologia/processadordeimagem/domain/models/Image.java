@@ -39,7 +39,7 @@ public class Image extends BaseModel {
 	@Enumerated(EnumType.STRING)
 	private ProcessingStatus status;
 
-	@Column(name = "FILTER", nullable = false)
+	@Column(name = "FILTER", nullable = true)
 	@Enumerated(EnumType.STRING)
 	private Filter filter;
 

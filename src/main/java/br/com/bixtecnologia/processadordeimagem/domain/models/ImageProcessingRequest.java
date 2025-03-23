@@ -32,10 +32,10 @@ public class ImageProcessingRequest extends BaseModel {
 	@Column(name = "IMAGE_URL", nullable = false)
     private String imageUrl;
     
-	@Column(name = "RESIZE_PERCENTAGE", nullable = false)
+	@Column(name = "RESIZE_PERCENTAGE", nullable = true)
     private double resizePercentage;
     
-	@Column(name = "FILTER", nullable = false)
+	@Column(name = "FILTER", nullable = true)
     private Filter filter;
 	
 	@Column(name = "REQUEST_TIME", nullable = false)
