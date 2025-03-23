@@ -125,7 +125,7 @@
       <column name="USER_NAME" type="varchar(200)">
         <constraints nullable="false"/>
       </column>
-      <column name="REFRESH_TOKEN" type="varchar(200)">
+      <column name="REFRESH_TOKEN" type="LONGTEXT">
         <constraints nullable="false" unique="true"/>
       </column>
       <column name="REVOKED" type="boolean">

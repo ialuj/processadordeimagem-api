@@ -22,27 +22,35 @@ import br.com.bixtecnologia.processadordeimagem.utils.MessageService;
 @PreAuthorize("isAuthenticated()")
 public class ImageProcessingController extends BaseController {
 
-	@Autowired
-	private ImageProcessingProducer imageProcessingProducer;
+    @Autowired
+    private ImageProcessingProducer imageProcessingProducer;
 
-	@Autowired
-	private EmailSender emailSender;
+    @Autowired
+    private EmailSender emailSender;
 
-	@Autowired
-	private MessageService messageService;
+    @Autowired
+    private MessageService messageService;
 
-	@PostMapping("/process")
-	public ResponseEntity<String> processImage(@RequestBody ImageProcessingRequestDTO request,
-			Authentication authentication) {
-		UserDTO userDTO = this.getUserFromAuthentication(authentication);
-		request.setCreatedBy(userDTO.getUuid());
-		try {
-			emailSender.sendProcessingRequestEmail(userDTO.getName(), userDTO.getEmail());
-		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-					.body(messageService.getFormattedMessage("email.send.error", new String[] { userDTO.getEmail() }));
-		}
-		imageProcessingProducer.sendMessage(request);
-		return ResponseEntity.ok("Imagem enviada para processamento: " + request.getImageUrl());
-	}
+    @PostMapping("/process")
+    public ResponseEntity<String> processImage(@RequestBody ImageProcessingRequestDTO request,
+                                               Authentication authentication) {
+        if (request.getImageUrl() == null || request.getImageUrl().isEmpty()) {
+            return ResponseEntity.badRequest().body("A URL da imagem não foi fornecida.");
+        }
+
+        UserDTO userDTO = this.getUserFromAuthentication(authentication);
+        request.setCreatedBy(userDTO.getUuid());
+
+        try {
+            emailSender.sendProcessingRequestEmail(userDTO.getName(), userDTO.getEmail());
+        } catch (Exception e) {
+            String errorMessage = messageService.getFormattedMessage("email.send.error", 
+                                        new String[] { userDTO.getEmail() });
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorMessage);
+        }
+
+        imageProcessingProducer.sendMessage(request);
+        return ResponseEntity.ok("Imagem enviada para processamento: " + request.getImageUrl());
+    }
 }
+

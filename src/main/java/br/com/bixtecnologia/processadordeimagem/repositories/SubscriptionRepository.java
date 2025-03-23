@@ -3,7 +3,6 @@ package br.com.bixtecnologia.processadordeimagem.repositories;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -16,10 +15,10 @@ import br.com.bixtecnologia.processadordeimagem.domain.utils.SubscriptionPlan;
 @Repository
 public interface SubscriptionRepository extends JpaRepository<Subscription, Long> {
 	
-	@Query("select s from Subscription s where s.userId = :userId and s.isActive = 1 and s.endDate is NULL")
-	public Optional<Subscription> findByUserId(Long userId);
+	//@Query("select s from Subscription s where s.userId = :userId and s.isActive = 1 and s.endDate is NULL")
+	public Optional<Subscription> findByUserIdAndIsActiveAndEndDateIsNull(Long userId);
 
-	@Query("select s from Subscription s where s.plan = :plan and s.isActive = 1 and s.endDate is NULL")
-	public List<Subscription> findByPlan(SubscriptionPlan plan);
+	//@Query("select s from Subscription s where s.plan = :plan and s.isActive = 1 and s.endDate is NULL")
+	public List<Subscription> findByPlanAndIsActiveAndEndDateIsNull(SubscriptionPlan plan);
 
 }

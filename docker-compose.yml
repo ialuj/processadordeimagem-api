@@ -47,7 +47,7 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - ./target:/target
+      - ./uploads:/app/uploads
 
 volumes:
   mariadb_data:

@@ -35,7 +35,7 @@ public class QuotaResetTask extends BaseService {
 	public void resetQuotas() throws BusinessException {
 		try {
 			logger.info("Iniciado a Task de redefinição das quotas para usuários com Plano Básico");
-			List<Subscription> subscriptions = subscriptionRepository.findByPlan(SubscriptionPlan.BASIC);
+			List<Subscription> subscriptions = subscriptionRepository.findByPlanAndIsActiveAndEndDateIsNull(SubscriptionPlan.BASIC);
 			logger.info("Subscricoes encontradas: " + subscriptions.size());
 			User adminUser = this.getAdminUser();
 			subscriptions.forEach(subscription -> {

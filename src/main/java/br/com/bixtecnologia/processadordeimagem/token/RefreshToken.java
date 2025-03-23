@@ -32,7 +32,7 @@ public class RefreshToken {
     private String username;
 
     @NotBlank
-    @Column(name = "REFRESH_TOKEN", nullable = false, length = 500)
+    @Column(name = "REFRESH_TOKEN", nullable = false)
     private String refreshToken;
 
     @NotNull

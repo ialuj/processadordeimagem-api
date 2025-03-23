@@ -26,7 +26,7 @@ public class SubscriptionServiceImpl extends BaseService implements ISubscriptio
 	@Override
 	public Subscription getSubscriptionByUserId(Long userId) throws BusinessException {
 		return Optional
-				.of(subscriptionRepository.findByUserId(userId)
+				.of(subscriptionRepository.findByUserIdAndIsActiveAndEndDateIsNull(userId)
 						.orElseThrow(() -> new BusinessException(messageService
 								.getFormattedMessage("subscription.user.id.not.found", new String[] { userId + "" }))))
 				.get();

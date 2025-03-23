@@ -13,7 +13,6 @@ import br.com.bixtecnologia.processadordeimagem.services.util.BaseService;
 import br.com.bixtecnologia.processadordeimagem.services.util.BusinessException;
 import br.com.bixtecnologia.processadordeimagem.token.RefreshToken;
 import br.com.bixtecnologia.processadordeimagem.transform.IRefreshTokenTransformer;
-import br.com.bixtecnologia.processadordeimagem.utils.MessageService;
 
 @Service
 public class RefreshTokenService extends BaseService {

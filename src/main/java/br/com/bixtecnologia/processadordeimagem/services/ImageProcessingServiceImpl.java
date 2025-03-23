@@ -85,6 +85,8 @@ public class ImageProcessingServiceImpl extends BaseService implements IImagePro
 	private EmailSender emailSender;
 
 	private static final Logger logger = Logger.getLogger(ImageProcessingServiceImpl.class.getName());
+	
+	private static final String UPLOAD_DIR = System.getenv("UPLOAD_DIR") != null ? System.getenv("UPLOAD_DIR") : "/app/uploads/";
 
 	@Override
 	@Transactional
@@ -96,7 +98,7 @@ public class ImageProcessingServiceImpl extends BaseService implements IImagePro
 									.getFormattedMessage("user.uuid.not.found", new String[] { request.getCreatedBy() }))))
 					.get();
 
-			/*Subscription subscription = getAndValidateSubscription(loggedUser);
+			Subscription subscription = getAndValidateSubscription(loggedUser);
 			if (SubscriptionPlan.BASIC.equals(subscription.getPlan())) {
 				List<Quota> quotas = quotaService.getQuotaBySubscriptionId(subscription.getId());
 				Quota quota = quotas.get(0);
@@ -104,8 +106,7 @@ public class ImageProcessingServiceImpl extends BaseService implements IImagePro
 					throw new BusinessException(messageService.getFormattedMessage("user.quota.maximum..expired",
 							new String[] { loggedUser.getName() }));
 				}
-				quotaService.resetQuota(subscription.getId(), loggedUser);
-			}*/
+			}
 
 			this.validateImageProcessingRequest(request);
 
@@ -167,6 +168,17 @@ public class ImageProcessingServiceImpl extends BaseService implements IImagePro
 				throw new BusinessException(this.getMessageService().getFormattedMessage("email.send.error",
 						new String[] { loggedUser.getEmail() }));
 			}
+			
+			if (SubscriptionPlan.BASIC.equals(subscription.getPlan())) {
+				List<Quota> quotas = quotaService.getQuotaBySubscriptionId(subscription.getId());
+				Quota quota = quotas.get(0);
+				if (quota.getQuota() < 1) {
+					throw new BusinessException(messageService.getFormattedMessage("user.quota.maximum..expired",
+							new String[] { loggedUser.getName() }));
+				}
+				quotaService.resetQuota(subscription.getId(), loggedUser);
+			}
+
 
 			return imageProcessingResultDTO;
 		} catch (BusinessException e) {
@@ -206,7 +218,7 @@ public class ImageProcessingServiceImpl extends BaseService implements IImagePro
 	            resizedImage = applySepiaFilter(resizedImage);
 	        }
 
-	        File output = new File(System.getProperty("java.io.tmpdir"),
+	        File output = new File(UPLOAD_DIR,
 	                "processed_image_" + DateUtils.getCurrentDate().getTime() + ".jpg");
 	        ImageIO.write(resizedImage, "jpg", output);
 
@@ -249,7 +261,7 @@ public class ImageProcessingServiceImpl extends BaseService implements IImagePro
 
 	private Subscription getAndValidateSubscription(User user) throws BusinessException {
 		return Optional
-				.of(this.subscriptionRepository.findByUserId(user.getId())
+				.of(this.subscriptionRepository.findByUserIdAndIsActiveAndEndDateIsNull(user.getId())
 						.orElseThrow(() -> new BusinessException(messageService
 								.getFormattedMessage("user.subscription.expired", new String[] { user.getName() }))))
 				.get();
