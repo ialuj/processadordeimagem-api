@@ -1,10 +1,13 @@
 package br.com.bixtecnologia.processadordeimagem.security;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
@@ -32,6 +35,14 @@ public class JwtFilter extends OncePerRequestFilter {
         this.userDetailsService = userDetailsService;
     }
 
+    @SuppressWarnings("unchecked")
+	private List<SimpleGrantedAuthority> getAuthoritiesFromToken(Claims claims) {
+        List<String> roles = claims.get("roles", List.class);
+        return roles.stream()
+                .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
+                .collect(Collectors.toList());
+    }
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
@@ -51,9 +62,10 @@ public class JwtFilter extends OncePerRequestFilter {
 
                     if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                         var userDetails = userDetailsService.loadUserByUsername(username);
+                        List<SimpleGrantedAuthority> authorities = getAuthoritiesFromToken(claims); // Extraindo authorities
 
                         var authToken = new UsernamePasswordAuthenticationToken(
-                                userDetails, null, userDetails.getAuthorities()
+                                userDetails, null, authorities
                         );
                         SecurityContextHolder.getContext().setAuthentication(authToken);
                         logger.info("User authenticated: {}", username);
@@ -68,7 +80,6 @@ public class JwtFilter extends OncePerRequestFilter {
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token inválido");
                 return;
             } catch (Exception e) {
-            	e.printStackTrace();
                 logger.error("Error processing token: {}", e.getMessage());
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Erro ao processar token");
                 return;

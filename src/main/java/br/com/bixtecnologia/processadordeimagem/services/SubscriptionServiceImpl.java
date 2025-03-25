@@ -1,5 +1,6 @@
 package br.com.bixtecnologia.processadordeimagem.services;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +27,8 @@ public class SubscriptionServiceImpl extends BaseService implements ISubscriptio
 	@Override
 	public Subscription getSubscriptionByUserId(Long userId) throws BusinessException {
 		return Optional
-				.of(subscriptionRepository.findByUserIdAndIsActiveAndEndDateIsNull(userId)
+				.of(subscriptionRepository
+						.findByUserIdAndIsActiveTrueAndEndDateAfterOrEndDateIsNull(userId, LocalDateTime.now())
 						.orElseThrow(() -> new BusinessException(messageService
 								.getFormattedMessage("subscription.user.id.not.found", new String[] { userId + "" }))))
 				.get();

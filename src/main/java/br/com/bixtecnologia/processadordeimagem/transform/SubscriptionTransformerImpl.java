@@ -68,6 +68,7 @@ public class SubscriptionTransformerImpl extends DTOTransformerImpl<Subscription
 	@Override
 	public Subscription transformFromDTO(SubscriptionDTO source) {
 		Subscription target = new Subscription();
+		super.setValues(source, target);
 		target.setPlan(SubscriptionPlan.toEnum(source.getPlan()));
 		target.setIsActive(source.getIsActive());
 		target.setUserId(source.getUserId());
@@ -77,6 +78,7 @@ public class SubscriptionTransformerImpl extends DTOTransformerImpl<Subscription
 	@Override
 	public SubscriptionDTO transformToDTO(Subscription source) {
 		SubscriptionDTO target = new SubscriptionDTO();
+		super.setValues(source, target);
 		target.setPlan(source.getPlan().getDescription());
 		target.setIsActive(source.getIsActive());
 		target.setUserId(source.getUserId());

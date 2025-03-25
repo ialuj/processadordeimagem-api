@@ -126,7 +126,7 @@
         <constraints nullable="false"/>
       </column>
       <column name="REFRESH_TOKEN" type="LONGTEXT">
-        <constraints nullable="false" unique="true"/>
+        <constraints nullable="false" />
       </column>
       <column name="REVOKED" type="boolean">
         <constraints nullable="false"/>

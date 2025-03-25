@@ -1,5 +1,6 @@
 package br.com.bixtecnologia.processadordeimagem.task;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -35,7 +36,9 @@ public class QuotaResetTask extends BaseService {
 	public void resetQuotas() throws BusinessException {
 		try {
 			logger.info("Iniciado a Task de redefinição das quotas para usuários com Plano Básico");
-			List<Subscription> subscriptions = subscriptionRepository.findByPlanAndIsActiveAndEndDateIsNull(SubscriptionPlan.BASIC);
+			List<Subscription> subscriptions = subscriptionRepository
+					.findByPlanAndIsActiveTrueAndEndDateAfterOrEndDateIsNull(SubscriptionPlan.BASIC,
+							LocalDateTime.now());
 			logger.info("Subscricoes encontradas: " + subscriptions.size());
 			User adminUser = this.getAdminUser();
 			subscriptions.forEach(subscription -> {

@@ -5,6 +5,7 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.logging.Level;
@@ -85,17 +86,14 @@ public class ImageProcessingServiceImpl extends BaseService implements IImagePro
 	private EmailSender emailSender;
 
 	private static final Logger logger = Logger.getLogger(ImageProcessingServiceImpl.class.getName());
-	
-	private static final String UPLOAD_DIR = System.getenv("UPLOAD_DIR") != null ? System.getenv("UPLOAD_DIR") : "/app/uploads/";
 
 	@Override
 	@Transactional
 	public ImageProcessingResultDTO processImage(ImageProcessingRequestDTO request) throws BusinessException {
 		try {
-			User loggedUser = Optional
-					.of(this.userRepository.findByUuid(request.getCreatedBy())
-							.orElseThrow(() -> new BusinessException(messageService
-									.getFormattedMessage("user.uuid.not.found", new String[] { request.getCreatedBy() }))))
+			User loggedUser = Optional.of(this.userRepository.findByUuid(request.getCreatedBy())
+					.orElseThrow(() -> new BusinessException(messageService.getFormattedMessage("user.uuid.not.found",
+							new String[] { request.getCreatedBy() }))))
 					.get();
 
 			Subscription subscription = getAndValidateSubscription(loggedUser);
@@ -106,6 +104,8 @@ public class ImageProcessingServiceImpl extends BaseService implements IImagePro
 					throw new BusinessException(messageService.getFormattedMessage("user.quota.maximum..expired",
 							new String[] { loggedUser.getName() }));
 				}
+				int quotaNumber = quota.getQuota();
+				quota.setQuota(quotaNumber - 1);
 			}
 
 			this.validateImageProcessingRequest(request);
@@ -140,12 +140,12 @@ public class ImageProcessingServiceImpl extends BaseService implements IImagePro
 			imageProcessingRequest.setUpdatedBy(this.generateUuid());
 			imageProcessingRequest.setUpdateDate(DateUtils.getCurrentLocalDateTime());
 			this.imageProcessingRequestRepository.save(imageProcessingRequest);
-			
+
 			image.setUpdatedBy(this.generateUuid());
 			image.setUpdateDate(DateUtils.getCurrentLocalDateTime());
 			image.setStatus(ProcessingStatus.COMPLETED);
 			this.imageRepository.save(image);
-			
+
 			imageProcessingResult.setResultTime(DateUtils.getCurrentLocalDateTime());
 			imageProcessingResult.setUpdatedBy(this.generateUuid());
 			imageProcessingResult.setUpdateDate(DateUtils.getCurrentLocalDateTime());
@@ -168,7 +168,7 @@ public class ImageProcessingServiceImpl extends BaseService implements IImagePro
 				throw new BusinessException(this.getMessageService().getFormattedMessage("email.send.error",
 						new String[] { loggedUser.getEmail() }));
 			}
-			
+
 			if (SubscriptionPlan.BASIC.equals(subscription.getPlan())) {
 				List<Quota> quotas = quotaService.getQuotaBySubscriptionId(subscription.getId());
 				Quota quota = quotas.get(0);
@@ -178,7 +178,6 @@ public class ImageProcessingServiceImpl extends BaseService implements IImagePro
 				}
 				quotaService.resetQuota(subscription.getId(), loggedUser);
 			}
-
 
 			return imageProcessingResultDTO;
 		} catch (BusinessException e) {
@@ -194,41 +193,46 @@ public class ImageProcessingServiceImpl extends BaseService implements IImagePro
 	}
 
 	private File processImageFile(ImageProcessingRequestDTO request) throws BusinessException {
-	    try {
-	        // Verifica se a URL é um caminho de arquivo no sistema local
-	        File imageFile = new File(request.getImageUrl());
-	        
-	        // Verifica se o arquivo existe
-	        if (!imageFile.exists()) {
-	            throw new BusinessException("A imagem não foi encontrada: " + request.getImageUrl());
-	        }
+		try {
+			String uploadDir = System.getenv("UPLOAD_DIR") != null ? System.getenv("UPLOAD_DIR")
+					: "/app/uploads/";
 
-	        BufferedImage originalImage = ImageIO.read(imageFile);
+			String imagePath = request.getImageUrl();
+			if (System.getProperty("os.name").toLowerCase().contains("win")) {
+			    imagePath = imagePath.replace("/app/uploads", "./uploads");
+			    uploadDir = uploadDir.replace("/app/uploads", "./uploads");
+			}
 
-	        int newWidth = (int) (originalImage.getWidth() * (request.getResizePercentage() / 100.0));
-	        int newHeight = (int) (originalImage.getHeight() * (request.getResizePercentage() / 100.0));
-	        BufferedImage resizedImage = new BufferedImage(newWidth, newHeight, originalImage.getType());
-	        Graphics2D g = resizedImage.createGraphics();
-	        g.drawImage(originalImage, 0, 0, newWidth, newHeight, null);
-	        g.dispose();
+			File imageFile = new File(imagePath);
 
-	        if ("Grayscale".equalsIgnoreCase(request.getFilter())) {
-	            resizedImage = applyGrayscaleFilter(resizedImage);
-	        } else if ("Sepia".equalsIgnoreCase(request.getFilter())) {
-	            resizedImage = applySepiaFilter(resizedImage);
-	        }
+			if (!imageFile.exists()) {
+				throw new BusinessException("A imagem não foi encontrada: " + request.getImageUrl());
+			}
 
-	        File output = new File(UPLOAD_DIR,
-	                "processed_image_" + DateUtils.getCurrentDate().getTime() + ".jpg");
-	        ImageIO.write(resizedImage, "jpg", output);
+			BufferedImage originalImage = ImageIO.read(imageFile);
 
-	        return output;
-	    } catch (IOException e) {
-	        logger.log(Level.SEVERE, errorMessage(), e);
-	        throw new BusinessException(errorMessage());
-	    }
+			int newWidth = (int) (originalImage.getWidth() * (request.getResizePercentage() / 100.0));
+			int newHeight = (int) (originalImage.getHeight() * (request.getResizePercentage() / 100.0));
+			BufferedImage resizedImage = new BufferedImage(newWidth, newHeight, originalImage.getType());
+			Graphics2D g = resizedImage.createGraphics();
+			g.drawImage(originalImage, 0, 0, newWidth, newHeight, null);
+			g.dispose();
+
+			if ("Grayscale".equalsIgnoreCase(request.getFilter())) {
+				resizedImage = applyGrayscaleFilter(resizedImage);
+			} else if ("Sepia".equalsIgnoreCase(request.getFilter())) {
+				resizedImage = applySepiaFilter(resizedImage);
+			}
+
+			File output = new File(uploadDir, "processed_image_" + DateUtils.getCurrentDate().getTime() + ".jpg");
+			ImageIO.write(resizedImage, "jpg", output);
+
+			return output;
+		} catch (IOException e) {
+			logger.log(Level.SEVERE, errorMessage(), e);
+			throw new BusinessException(errorMessage());
+		}
 	}
-
 
 	private BufferedImage applyGrayscaleFilter(BufferedImage image) {
 		for (int y = 0; y < image.getHeight(); y++) {
@@ -261,7 +265,8 @@ public class ImageProcessingServiceImpl extends BaseService implements IImagePro
 
 	private Subscription getAndValidateSubscription(User user) throws BusinessException {
 		return Optional
-				.of(this.subscriptionRepository.findByUserIdAndIsActiveAndEndDateIsNull(user.getId())
+				.of(this.subscriptionRepository
+						.findByUserIdAndIsActiveTrueAndEndDateAfterOrEndDateIsNull(user.getId(), LocalDateTime.now())
 						.orElseThrow(() -> new BusinessException(messageService
 								.getFormattedMessage("user.subscription.expired", new String[] { user.getName() }))))
 				.get();

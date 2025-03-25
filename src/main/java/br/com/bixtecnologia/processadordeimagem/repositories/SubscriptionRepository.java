@@ -1,5 +1,6 @@
 package br.com.bixtecnologia.processadordeimagem.repositories;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,10 +16,15 @@ import br.com.bixtecnologia.processadordeimagem.domain.utils.SubscriptionPlan;
 @Repository
 public interface SubscriptionRepository extends JpaRepository<Subscription, Long> {
 	
-	//@Query("select s from Subscription s where s.userId = :userId and s.isActive = 1 and s.endDate is NULL")
-	public Optional<Subscription> findByUserIdAndIsActiveAndEndDateIsNull(Long userId);
+	/*@Query("select s from Subscription s where s.userId = :userId and s.isActive = 1 and s.endDate is NULL")
+	public Optional<Subscription> findActiveSubscriptionByUserId(Long userId);
 
-	//@Query("select s from Subscription s where s.plan = :plan and s.isActive = 1 and s.endDate is NULL")
-	public List<Subscription> findByPlanAndIsActiveAndEndDateIsNull(SubscriptionPlan plan);
+	@Query("select s from Subscription s where s.plan = :plan and s.isActive = 1 and s.endDate is NULL")
+	public List<Subscription> findActiveSubscriptionByPlan(SubscriptionPlan plan);*/
+	
+	Optional<Subscription> findByUserIdAndIsActiveTrueAndEndDateAfterOrEndDateIsNull(Long userId, LocalDateTime now);
+
+	List<Subscription> findByPlanAndIsActiveTrueAndEndDateAfterOrEndDateIsNull(SubscriptionPlan plan, LocalDateTime now);
+
 
 }
