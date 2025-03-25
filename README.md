@@ -14,6 +14,12 @@ Este projeto consiste em uma API Spring Boot para processar imagens, utilizando 
 - Liquibase
 - Swagger para documentação
 
+## Vídeo demonstrativo do funcionamento da solução implementada
+
+Pode assistir o vídeo demonstrativo do funcionamento da API de Processamento de Imagens no Link abaixo:
+
+[https://www.loom.com/share/64b7bb52b15c45c1ada6650287eeb69f?sid=fd8ea178-7b70-46ea-af80-8da5f3da5380](https://www.loom.com/share/64b7bb52b15c45c1ada6650287eeb69f?sid=fd8ea178-7b70-46ea-af80-8da5f3da5380)
+
 ## 1️⃣ Como Executar a Aplicação
 
 ### Pré-requisitos
