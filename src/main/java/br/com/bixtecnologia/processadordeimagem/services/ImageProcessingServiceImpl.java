@@ -196,6 +196,7 @@ public class ImageProcessingServiceImpl extends BaseService implements IImagePro
 		try {
 			String uploadDir = System.getenv("UPLOAD_DIR") != null ? System.getenv("UPLOAD_DIR")
 					: "/app/uploads/";
+            logger.info("Diretório de upload: " + uploadDir);
 
 			String imagePath = request.getImageUrl();
 			if (System.getProperty("os.name").toLowerCase().contains("win")) {
